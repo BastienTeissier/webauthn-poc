@@ -1,0 +1,9 @@
+/.env
+.idea
+node_modules
+
+# turbo caching
+.turbo
+.eslintcache
+# build
+dist
