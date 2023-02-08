@@ -6,7 +6,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { Input, PasswordInput } from 'components/atoms';
 import { Pages } from 'constant';
-import { login, LoginData } from 'services/api/auth/login';
+import { beginRegistration, LoginData, login } from 'services/api/auth/login';
 
 import style from './Login.module.css';
 
@@ -15,7 +15,15 @@ export const Login: NextPage = () => {
   const router = useRouter();
 
   const { register, handleSubmit } = useForm<LoginData>();
-  const onSubmit = (data: LoginData) => {
+  const onRegister = (data: LoginData) => {
+    return beginRegistration(data)
+      .then(() => router.push(Pages.Home))
+      .catch((e: Response) => {
+        console.log(e);
+      });
+  };
+
+  const onLogin = (data: LoginData) => {
     return login(data)
       .then(() => router.push(Pages.Home))
       .catch((e: Response) => {
@@ -36,7 +44,7 @@ export const Login: NextPage = () => {
         <form
           className={style.form}
           method="post"
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onLogin)}
         >
           <div>
             <Input
@@ -62,25 +70,46 @@ export const Login: NextPage = () => {
               })}
             />
           </div>
+          <button type="submit" className={style.submit}>
+            <FormattedMessage id="login.submit" />
+          </button>
+        </form>
+      </div>
+      <div className={style.container}>
+        <h1>
+          <FormattedMessage id="register.title" />
+        </h1>
+        <form
+          className={style.form}
+          method="post"
+          onSubmit={handleSubmit(onRegister)}
+        >
           <div>
-            <PasswordInput
-              id="login.password"
-              autoComplete="current-password"
+            <Input
+              id="register.email"
+              type="email"
+              autoComplete="email"
               label={intl.formatMessage({
-                id: 'login.password.label',
+                id: 'register.email.label',
               })}
               placeholder={intl.formatMessage({
-                id: 'login.password.placeholder',
+                id: 'register.email.placeholder',
               })}
-              {...register('password', {
+              {...register('email', {
                 required: intl.formatMessage({
-                  id: 'login.password.error.required',
+                  id: 'register.email.error.required',
                 }),
+                pattern: {
+                  value: /^\S+@\S+\.\S+$/, // basic email regex
+                  message: intl.formatMessage({
+                    id: 'register.email.error.invalid',
+                  }),
+                },
               })}
             />
           </div>
           <button type="submit" className={style.submit}>
-            <FormattedMessage id="login.submit" />
+            <FormattedMessage id="register.submit" />
           </button>
         </form>
       </div>

@@ -7,20 +7,32 @@ import { compare } from 'bcrypt';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import { Repository } from 'typeorm';
 import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
+import {
+  generateAuthenticationOptions,
+  verifyAuthenticationResponse,
+} from '@simplewebauthn/server';
 
 import { User } from '../user/user.entity';
 import { Credentials } from './interfaces/credentials.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { JwtToken } from './interfaces/jwt-token.interface';
+import { Authenticator } from '@modules/user/authenticator.entity';
 
 const ACCESS_TOKEN_MINUTES_TO_LIVE = 10;
 const REFRESH_TOKEN_MINUTES_TO_LIVE = 525600; // 1 year
 
+// Human-readable title for your website
+const rpName = 'SimpleWebAuthn Example';
+// A unique identifier for your website
+const rpID = 'localhost';
+// The URL at which registrations and authentications should occur
+const origin = `http://${rpID}:3000`;
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Authenticator) private readonly authenticatorRepository: Repository<Authenticator>,
     @Inject(CustomLogger) private readonly logger: CustomLogger,
   ) {
     this.logger.setContext('AuthService');
@@ -110,5 +122,50 @@ export class AuthService {
 
       return null;
     }
+  }
+
+  setUserCurrentChallenge = async (userId: string, challenge: string) => {
+    await this.userRepository.save({ id: userId, currentChallenge: challenge });
+  };
+
+  async initiateLogin(email: string): Promise<PublicKeyCredentialCreationOptions> {
+    const user = await this.userRepository.findOneOrFail({ where: {email}, relations: ['authenticators'] });
+    console.log('user', user);
+
+    const authenticators = await this.authenticatorRepository.find();
+    console.log('authenticators', authenticators);
+
+    const options = generateAuthenticationOptions({
+      // Require users to use a previously-registered authenticator
+      allowCredentials: user.authenticators.map(authenticator => ({
+        id: authenticator.credentialID,
+        type: 'public-key',
+        // Optional
+        transports: [],
+      })),
+      userVerification: 'preferred',
+    });
+    console.log('options', options)
+
+    this.setUserCurrentChallenge(user.id, options.challenge);
+
+    return options;
+  }
+
+  async completeLogin(userEmail: string, response: any) {
+    console.log('response', response);
+    const user = await this.userRepository.findOneOrFail({where: {email: userEmail}, relations: ['authenticators']});
+    console.log('user', user);
+    const authenticator = user.authenticators.find((authenticator) => authenticator.rawId === response.rawId)
+    console.log('authenticator', authenticator);
+    const { verified } = await verifyAuthenticationResponse({
+      response,
+      expectedChallenge: user.currentChallenge,
+      expectedOrigin: origin,
+      expectedRPID: rpID,
+      authenticator: authenticator,
+    });
+
+    return { verified };
   }
 }

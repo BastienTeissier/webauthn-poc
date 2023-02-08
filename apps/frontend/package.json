@@ -17,6 +17,7 @@
     "test:type": "pnpm build"
   },
   "dependencies": {
+    "@simplewebauthn/browser": "^7.0.1",
     "@webauthn-poc/interfaces": "workspace:*",
     "axios": "0.27.2",
     "axios-auth-refresh": "3.3.3",

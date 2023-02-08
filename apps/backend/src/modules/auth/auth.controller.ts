@@ -40,4 +40,17 @@ export class AuthController {
 
     return res.sendStatus(200);
   }
+
+  @Post('login/initiate', { isPublic: true })
+  async initiateLogin(@Body() body: {email: string}): Promise<PublicKeyCredentialCreationOptions> {
+    return this.authService.initiateLogin(body.email);
+  }
+
+  @Post('login/complete', { isPublic: true })
+  async completeLogin(@Body() body: { userEmail: string; credential: string }): Promise<{ verified: boolean }> {
+
+    const { verified } = await this.authService.completeLogin(body.userEmail, body.credential);
+
+    return { verified };
+  }
 }

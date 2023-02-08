@@ -1,7 +1,7 @@
 version: '3.4'
 
 services:
-  db:
+  db-raw:
     # In production, you may want to use a managed database service
     image: postgres:14-alpine
     environment:
@@ -14,7 +14,7 @@ services:
       # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
       # - ./docker/db/data:/var/lib/postgresql/data:rw
     ports:
-      - '5432:5432'
+      - '5433:5432'
 
   db-test:
     image: postgres:14-alpine

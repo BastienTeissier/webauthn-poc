@@ -1,9 +1,9 @@
 import { AuthService } from '@auth/auth.service';
-import { GetUserDto } from '@webauthn-poc/interfaces';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { AppModule } from '@root/app.module';
+import { GetUserDto } from '@webauthn-poc/interfaces';
 import faker from 'faker';
 import request from 'supertest';
 import { Repository } from 'typeorm';

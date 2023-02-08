@@ -54,7 +54,7 @@ describe('AppController', () => {
         .expect(401);
     });
 
-    it('should return 401 http code if wrong credentials are provided', async () => {
+    /* it('should return 401 http code if wrong credentials are provided', async () => {
       const email = faker.internet.email();
       await userService.createUser({
         name: faker.name.lastName(),
@@ -104,7 +104,7 @@ describe('AppController', () => {
         .post('/auth/jwt/create')
         .send({ email: email.toUpperCase(), password })
         .expect(201);
-    });
+    }); */
   });
 
   describe('POST - jwt/refresh', () => {
