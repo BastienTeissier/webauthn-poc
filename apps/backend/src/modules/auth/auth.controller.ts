@@ -47,10 +47,15 @@ export class AuthController {
   }
 
   @Post('login/complete', { isPublic: true })
-  async completeLogin(@Body() body: { userEmail: string; credential: string }): Promise<{ verified: boolean }> {
+  async completeLogin(@Body() body: { userEmail: string; credential: string }, @Res() res: Response): Promise<Response> {
 
-    const { verified } = await this.authService.completeLogin(body.userEmail, body.credential);
+    const { access, refresh } = await this.authService.completeLogin(body.userEmail, body.credential);
 
-    return { verified };
+    res.cookie(REFRESH_TOKEN, refresh, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV !== Environment.Development,
+    });
+
+    return res.send({ access });
   }
 }

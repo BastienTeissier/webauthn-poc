@@ -130,10 +130,8 @@ export class AuthService {
 
   async initiateLogin(email: string): Promise<PublicKeyCredentialCreationOptions> {
     const user = await this.userRepository.findOneOrFail({ where: {email}, relations: ['authenticators'] });
-    console.log('user', user);
 
     const authenticators = await this.authenticatorRepository.find();
-    console.log('authenticators', authenticators);
 
     const options = generateAuthenticationOptions({
       // Require users to use a previously-registered authenticator
@@ -143,9 +141,9 @@ export class AuthService {
         // Optional
         transports: [],
       })),
+      rpID,
       userVerification: 'preferred',
     });
-    console.log('options', options)
 
     this.setUserCurrentChallenge(user.id, options.challenge);
 
@@ -153,11 +151,8 @@ export class AuthService {
   }
 
   async completeLogin(userEmail: string, response: any) {
-    console.log('response', response);
     const user = await this.userRepository.findOneOrFail({where: {email: userEmail}, relations: ['authenticators']});
-    console.log('user', user);
     const authenticator = user.authenticators.find((authenticator) => authenticator.rawId === response.rawId)
-    console.log('authenticator', authenticator);
     const { verified } = await verifyAuthenticationResponse({
       response,
       expectedChallenge: user.currentChallenge,
@@ -165,7 +160,13 @@ export class AuthService {
       expectedRPID: rpID,
       authenticator: authenticator,
     });
+    if(!verified) {
+      throw new UnauthorizedException();
+    }
+    return {
+      access: this.createAccessToken(user, ACCESS_TOKEN_MINUTES_TO_LIVE),
+      refresh: this.createRefreshToken(user, REFRESH_TOKEN_MINUTES_TO_LIVE),
+    };
 
-    return { verified };
   }
 }

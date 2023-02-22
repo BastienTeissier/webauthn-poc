@@ -15,13 +15,6 @@ export const Login: NextPage = () => {
   const router = useRouter();
 
   const { register, handleSubmit } = useForm<LoginData>();
-  const onRegister = (data: LoginData) => {
-    return beginRegistration(data)
-      .then(() => router.push(Pages.Home))
-      .catch((e: Response) => {
-        console.log(e);
-      });
-  };
 
   const onLogin = (data: LoginData) => {
     return login(data)
@@ -72,44 +65,6 @@ export const Login: NextPage = () => {
           </div>
           <button type="submit" className={style.submit}>
             <FormattedMessage id="login.submit" />
-          </button>
-        </form>
-      </div>
-      <div className={style.container}>
-        <h1>
-          <FormattedMessage id="register.title" />
-        </h1>
-        <form
-          className={style.form}
-          method="post"
-          onSubmit={handleSubmit(onRegister)}
-        >
-          <div>
-            <Input
-              id="register.email"
-              type="email"
-              autoComplete="email"
-              label={intl.formatMessage({
-                id: 'register.email.label',
-              })}
-              placeholder={intl.formatMessage({
-                id: 'register.email.placeholder',
-              })}
-              {...register('email', {
-                required: intl.formatMessage({
-                  id: 'register.email.error.required',
-                }),
-                pattern: {
-                  value: /^\S+@\S+\.\S+$/, // basic email regex
-                  message: intl.formatMessage({
-                    id: 'register.email.error.invalid',
-                  }),
-                },
-              })}
-            />
-          </div>
-          <button type="submit" className={style.submit}>
-            <FormattedMessage id="register.submit" />
           </button>
         </form>
       </div>

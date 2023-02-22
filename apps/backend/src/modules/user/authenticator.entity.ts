@@ -15,10 +15,10 @@ export class Authenticator {
 
   @Column('bytea', { unique: true })
   credentialID!: Uint8Array;
-  // SQL: Store raw bytes as `BYTEA`/`BLOB`/etc...
+
   @Column('bytea')
   credentialPublicKey!: Uint8Array;
-  // SQL: Consider `BIGINT` since some authenticators return atomic timestamps as counters
+
   @Column('bigint')
   counter!: number;
   // SQL: `VARCHAR(32)` or similar, longest possible value is currently 12 characters

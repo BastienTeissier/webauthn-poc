@@ -110,7 +110,7 @@ module.exports = {
       ],
       parser: '@typescript-eslint/parser',
       parserOptions: {
-        project: 'tsconfig.json',
+        project: 'apps/backend/tsconfig.json',
       },
       settings: { 'import/resolver': { typescript: {} } },
       rules: {

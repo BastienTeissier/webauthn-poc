@@ -7,6 +7,7 @@
     "build": "nest build -p tsconfig.build.json",
     "build:entities": "nest build -p tsconfig.typeorm.json",
     "dev": ". ./.env.rc && docker-compose up -d && nest start -p ./tsconfig.json src/main.ts --watch --preserveWatchOutput",
+    "dev:debug": ". ./.env.rc && docker-compose up -d && nest start -p ./tsconfig.json src/main.ts --watch --preserveWatchOutput --debug=8001",
     "explore": "pnpm start --entryFile repl",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint --cache './**/*.{js,ts,tsx}' --max-warnings 0",

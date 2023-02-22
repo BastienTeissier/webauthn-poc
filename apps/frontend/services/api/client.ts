@@ -26,7 +26,7 @@ apiClient.interceptors.request.use(
   async config => {
     const access = getAccessToken();
     if (!access) {
-      await Router.push(Pages.Login);
+      //await Router.push(Pages.Login);
       return config;
     }
     if (isTokenExpired(jwtDecode(access))) {

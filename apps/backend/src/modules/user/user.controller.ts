@@ -32,11 +32,12 @@ export class UserController {
     return this.service.finishRegistration(body.userId, body.credential);
   }
 
-/*   @Get('/me')
+  @Get('/me')
   getMe(@UseUser() user: User): Promise<GetUserDto> {
     return this.service.getUser(user.id);
   }
-
+  
+/*
   @Patch()
   async updateMe(@UseUser() user: User, @Body() userDto: UpdateUserDto): Promise<GetUserDto> {
     return await this.service.updateUser(user.id, userDto);
