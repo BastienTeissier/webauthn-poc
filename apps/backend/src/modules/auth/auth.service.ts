@@ -167,6 +167,5 @@ export class AuthService {
       access: this.createAccessToken(user, ACCESS_TOKEN_MINUTES_TO_LIVE),
       refresh: this.createRefreshToken(user, REFRESH_TOKEN_MINUTES_TO_LIVE),
     };
-
   }
 }

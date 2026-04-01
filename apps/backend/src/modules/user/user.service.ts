@@ -96,7 +96,6 @@ export class UserService {
     authenticator.credentialPublicKey = registrationInfo.credentialPublicKey;
     authenticator.counter = registrationInfo.counter;
     authenticator.credentialDeviceType = credential.type;
-    //authenticator.transports = [];
     authenticator.credentialBackedUp = false;
     authenticator.user = user;
 

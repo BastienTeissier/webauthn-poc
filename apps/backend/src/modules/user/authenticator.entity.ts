@@ -26,7 +26,7 @@ export class Authenticator {
   @Column('varchar', { length: 32 })
   credentialDeviceType!: CredentialDeviceType;
   // SQL: `BOOL` or whatever similar type is supported
-  @Column('boolean')
+  @Column('boolean') 
   credentialBackedUp!: boolean;
   // SQL: `VARCHAR(255)` and store string array as a CSV string
   // Ex: ['usb' | 'ble' | 'nfc' | 'internal']
@@ -34,5 +34,5 @@ export class Authenticator {
   transports?: AuthenticatorTransport[];
 
   @ManyToOne('User', 'id')
-  user!: User; 
+  user!: User;
 }
