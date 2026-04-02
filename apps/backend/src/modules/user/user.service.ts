@@ -9,9 +9,6 @@ import {
   generateRegistrationOptions,
   verifyRegistrationResponse,
 } from '@simplewebauthn/server';
-
-
-
 import { User } from './user.entity';
 import { Authenticator } from './authenticator.entity';
 
@@ -31,7 +28,7 @@ export class UserService {
     await this.userRepository.save({ id: userId, currentChallenge: challenge });
   };
 
-  startRegistration = async (userDto: CreateUserDto): Promise<PublicKeyCredentialCreationOptions> => {
+  startRegistration = async (userDto: CreateUserDto): Promise<ReturnType<typeof generateRegistrationOptions>> => {
     const existingUser = await this.userRepository
       .createQueryBuilder('user')
       .where('user.email = :email', { email: userDto.email })

@@ -11,7 +11,6 @@ import {
   generateAuthenticationOptions,
   verifyAuthenticationResponse,
 } from '@simplewebauthn/server';
-
 import { User } from '../user/user.entity';
 import { Credentials } from './interfaces/credentials.dto';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
@@ -128,7 +127,7 @@ export class AuthService {
     await this.userRepository.save({ id: userId, currentChallenge: challenge });
   };
 
-  async initiateLogin(email: string): Promise<PublicKeyCredentialCreationOptions> {
+  async initiateLogin(email: string): Promise<ReturnType<typeof generateAuthenticationOptions>> {
     const user = await this.userRepository.findOneOrFail({ where: {email}, relations: ['authenticators'] });
 
     const authenticators = await this.authenticatorRepository.find();
@@ -152,13 +151,16 @@ export class AuthService {
 
   async completeLogin(userEmail: string, response: any) {
     const user = await this.userRepository.findOneOrFail({where: {email: userEmail}, relations: ['authenticators']});
-    const authenticator = user.authenticators.find((authenticator) => authenticator.rawId === response.rawId)
+    const authenticator = user.authenticators.find((authenticator) => authenticator.rawId === response.rawId);
+    if (!authenticator) {
+      throw new UnauthorizedException('Authenticator not found');
+    }
     const { verified } = await verifyAuthenticationResponse({
       response,
       expectedChallenge: user.currentChallenge,
       expectedOrigin: origin,
       expectedRPID: rpID,
-      authenticator: authenticator,
+      authenticator,
     });
     if(!verified) {
       throw new UnauthorizedException();

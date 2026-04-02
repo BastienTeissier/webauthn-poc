@@ -1,26 +1,14 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "pipeline": {
+  "tasks": {
     "dev": {
       "cache": false,
-      // A package's `build` script depends on that package's
-      // dependencies and devDependencies
-      // `build` tasks  being completed first
-      // (the `^` symbol signifies `upstream`).
-      "dependsOn": [
-        "^build"
-      ],
-      // note: output globs are relative to each package's `package.json`
-      // (and not the monorepo root)
+      "dependsOn": ["^build"],
       "outputs": []
     },
     "test": {
-      "outputs": [
-        "coverage/**"
-      ],
-      "dependsOn": [
-        "^build"
-      ]
+      "outputs": ["coverage/**"],
+      "dependsOn": ["^build"]
     },
     "test:circular": {
       "outputs": [],
@@ -41,21 +29,15 @@
         "**/package.json",
         "../../packages/eslint-config-custom/**"
       ],
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     },
     "lint:style": {
       "outputs": [],
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     },
     "lint:fix": {
       "outputs": [],
-      "dependsOn": [
-        "^build"
-      ],
+      "dependsOn": ["^build"],
       "inputs": [
         "**/*.tsx",
         "**/*.ts",
@@ -66,29 +48,15 @@
     },
     "lint:style:fix": {
       "outputs": [],
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     },
     "test:type": {
       "outputs": [],
-      "dependsOn": [
-        "^build"
-      ]
+      "dependsOn": ["^build"]
     },
     "build": {
-      // A package's `build` script depends on that package's
-      // dependencies and devDependencies
-      // `build` tasks  being completed first
-      // (the `^` symbol signifies `upstream`).
-      "dependsOn": [
-        "^build"
-      ],
-      // note: output globs are relative to each package's `package.json`
-      // (and not the monorepo root)
-      "outputs": [
-        "dist/**"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
     }
   }
 }

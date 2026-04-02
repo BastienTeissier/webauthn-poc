@@ -4,6 +4,8 @@ import { Body, Req, Res } from '@nestjs/common';
 import { Environment } from '@root/env.validation';
 import { Request, Response } from 'express';
 
+import type { PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/typescript-types';
+
 import { AuthService } from './auth.service';
 import { Credentials } from './interfaces/credentials.dto';
 
@@ -42,7 +44,7 @@ export class AuthController {
   }
 
   @Post('login/initiate', { isPublic: true })
-  async initiateLogin(@Body() body: {email: string}): Promise<PublicKeyCredentialCreationOptions> {
+  async initiateLogin(@Body() body: {email: string}): Promise<PublicKeyCredentialRequestOptionsJSON> {
     return this.authService.initiateLogin(body.email);
   }
 

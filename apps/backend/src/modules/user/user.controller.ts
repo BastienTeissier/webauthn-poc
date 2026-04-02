@@ -12,6 +12,8 @@ import {
 } from '@webauthn-poc/interfaces';
 import { Repository } from 'typeorm';
 
+import type { PublicKeyCredentialCreationOptionsJSON } from '@simplewebauthn/typescript-types';
+
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
@@ -23,7 +25,7 @@ export class UserController {
   ) {}
 
   @Post('/register/start', { isPublic: true })
-  startRegistration(@Body() userDto: any): Promise<PublicKeyCredentialCreationOptions> {
+  startRegistration(@Body() userDto: any): Promise<PublicKeyCredentialCreationOptionsJSON> {
     return this.service.startRegistration(userDto);
   }
 
